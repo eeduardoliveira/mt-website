@@ -9,18 +9,36 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@prisma/client": "^5.22.0",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tiptap/extension-image": "^3.20.4",
+    "@tiptap/extension-link": "^3.20.4",
+    "@tiptap/pm": "^3.20.4",
+    "@tiptap/react": "^3.20.4",
+    "@tiptap/starter-kit": "^3.20.4",
+    "bcryptjs": "^3.0.3",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^0.577.0",
+    "next": "14.2.35",
+    "nodemailer": "^8.0.3",
+    "prisma": "^5.22.0",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.35"
+    "react-hook-form": "^7.71.2",
+    "slugify": "^1.6.8",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
+    "@types/nodemailer": "^7.0.11",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.35",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.35"
+    "typescript": "^5"
   }
 }
