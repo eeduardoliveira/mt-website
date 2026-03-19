@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { validateSession } from "@/lib/auth"
-import { supabase } from "@/lib/supabase"
+import { getSupabase } from "@/lib/supabase"
 
 export async function POST(request: Request) {
   try {
@@ -33,6 +33,8 @@ export async function POST(request: Request) {
     // Generate unique filename
     const ext = file.name.split(".").pop() || "jpg"
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+
+    const supabase = getSupabase()
 
     const { error } = await supabase.storage
       .from("uploads")
