@@ -1,0 +1,30 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#1a1916"/>
+  <!-- Subtle grid -->
+  <defs>
+    <pattern id="g" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#b8924a" stroke-width="0.3" opacity="0.15"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <!-- Gold accent bar top -->
+  <rect x="0" y="0" width="1200" height="3" fill="#b8924a" opacity="0.6"/>
+  <!-- Gold accent bar bottom -->
+  <rect x="0" y="627" width="1200" height="3" fill="#b8924a" opacity="0.6"/>
+
+  <!-- Monogram large center -->
+  <line x1="480" y1="390" x2="480" y2="210" stroke="#b8924a" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="480" y1="210" x2="600" y2="322" stroke="#b8924a" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="600" y1="322" x2="720" y2="210" stroke="#b8924a" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="720" y1="210" x2="720" y2="390" stroke="#b8924a" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="535" y1="210" x2="665" y2="210" stroke="#b8924a" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="600" y1="210" x2="600" y2="322" stroke="#b8924a" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Name -->
+  <text x="600" y="460" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="400" font-size="28" letter-spacing="14" fill="white">MARGARIDA TEMPERA</text>
+  <!-- Divider -->
+  <rect x="520" y="480" width="160" height="1" fill="#b8924a" opacity="0.5"/>
+  <!-- Tagline -->
+  <text x="600" y="510" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="300" font-size="14" letter-spacing="8" fill="rgba(255,255,255,0.45)">ESCRITÓRIO DE ADVOGADOS</text>
+</svg>

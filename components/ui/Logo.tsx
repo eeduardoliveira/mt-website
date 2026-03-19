@@ -7,10 +7,10 @@ import { translations } from "@/lib/translations";
 export function MTMonogram({ className = "w-10 h-10" }: { className?: string }) {
   return (
     <Image
-      src="/logo-margarida.png"
+      src="/mt-monogram-nav.svg"
       alt="MT"
-      width={40}
-      height={40}
+      width={36}
+      height={36}
       className={className}
     />
   );

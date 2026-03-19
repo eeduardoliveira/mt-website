@@ -1,0 +1,15 @@
+<svg width="200" height="220" viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="200" height="220" fill="#1a1916"/>
+  <!-- Monogram MT - white -->
+  <line x1="28" y1="100" x2="28" y2="20" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+  <line x1="28" y1="20" x2="100" y2="82" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+  <line x1="100" y1="82" x2="172" y2="20" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+  <line x1="172" y1="20" x2="172" y2="100" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+  <line x1="64" y1="20" x2="136" y2="20" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+  <line x1="100" y1="20" x2="100" y2="82" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+  <!-- Name -->
+  <text x="100" y="136" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="400" font-size="13.5" letter-spacing="5.5" fill="white">MARGARIDA TEMPERA</text>
+  <!-- Tagline -->
+  <text x="100" y="158" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="300" font-size="8.5" letter-spacing="5" fill="rgba(255,255,255,0.45)">ESCRITÓRIO DE ADVOGADOS</text>
+</svg>

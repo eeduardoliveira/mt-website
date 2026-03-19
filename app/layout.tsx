@@ -35,6 +35,17 @@ export const metadata: Metadata = {
       "Assessoria jurídica rigorosa e personalizada em Portugal.",
     locale: "pt_PT",
     type: "website",
+    images: [
+      {
+        url: "/mt-og-image.svg",
+        width: 1200,
+        height: 630,
+        alt: "Margarida Tempera — Escritório de Advogados",
+      },
+    ],
+  },
+  icons: {
+    icon: "/icon.svg",
   },
 };
 
