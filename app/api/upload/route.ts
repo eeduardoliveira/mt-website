@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import { validateSession } from "@/lib/auth"
-import { writeFile } from "fs/promises"
-import { join } from "path"
+import { supabase } from "@/lib/supabase"
 
 export async function POST(request: Request) {
   try {
@@ -34,11 +33,23 @@ export async function POST(request: Request) {
     // Generate unique filename
     const ext = file.name.split(".").pop() || "jpg"
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
-    const filepath = join(process.cwd(), "public", "uploads", filename)
 
-    await writeFile(filepath, buffer)
+    const { error } = await supabase.storage
+      .from("uploads")
+      .upload(filename, buffer, {
+        contentType: file.type,
+        upsert: false,
+      })
 
-    return NextResponse.json({ url: `/uploads/${filename}` })
+    if (error) {
+      return NextResponse.json({ error: "Failed to upload file" }, { status: 500 })
+    }
+
+    const { data: urlData } = supabase.storage
+      .from("uploads")
+      .getPublicUrl(filename)
+
+    return NextResponse.json({ url: urlData.publicUrl })
   } catch {
     return NextResponse.json({ error: "Failed to upload file" }, { status: 500 })
   }
