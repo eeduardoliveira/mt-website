@@ -22,7 +22,7 @@ export const translations = {
     cta2: { pt: "Áreas de Prática →", en: "Practice Areas →" },
     scroll: { pt: "scroll", en: "scroll" },
     stat1value: { pt: "5+", en: "5+" },
-    stat1label: { pt: "Anos de Experiência", en: "Years of Experience" },
+    stat1label: { pt: "Anos de Experiência Jurídica", en: "Years of Legal Experience" },
     stat2value: { pt: "PT", en: "PT" },
     stat2label: { pt: "Jurisdição", en: "Jurisdiction" },
   },
