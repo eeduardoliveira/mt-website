@@ -1,21 +1,44 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { PrismaClient } from "@prisma/client"
 
 export async function GET() {
-  const info: Record<string, unknown> = {
-    DATABASE_URL_SET: !!process.env.DATABASE_URL,
-    DIRECT_URL_SET: !!process.env.DIRECT_URL,
-    DATABASE_URL_PREFIX: process.env.DATABASE_URL?.substring(0, 30) + "...",
+  const results: Record<string, unknown> = {}
+
+  // Try multiple connection string formats
+  const urls = [
+    {
+      name: "pooler_transaction_6543",
+      url: `postgresql://postgres.fytptwolmscqzatlckii:lL6Oew8mwM1w@aws-0-eu-west-1.pooler.supabase.com:6543/postgres`,
+    },
+    {
+      name: "pooler_session_5432",
+      url: `postgresql://postgres.fytptwolmscqzatlckii:lL6Oew8mwM1w@aws-0-eu-west-1.pooler.supabase.com:5432/postgres`,
+    },
+    {
+      name: "direct_5432",
+      url: `postgresql://postgres:lL6Oew8mwM1w@db.fytptwolmscqzatlckii.supabase.co:5432/postgres`,
+    },
+    {
+      name: "pooler_transaction_ssl",
+      url: `postgresql://postgres.fytptwolmscqzatlckii:lL6Oew8mwM1w@aws-0-eu-west-1.pooler.supabase.com:6543/postgres?sslmode=require`,
+    },
+    {
+      name: "direct_ssl",
+      url: `postgresql://postgres:lL6Oew8mwM1w@db.fytptwolmscqzatlckii.supabase.co:5432/postgres?sslmode=require`,
+    },
+  ]
+
+  for (const { name, url } of urls) {
+    const prisma = new PrismaClient({ datasources: { db: { url } } })
+    try {
+      const count = await prisma.$queryRaw`SELECT 1 as ok`
+      results[name] = { ok: true, result: count }
+    } catch (e) {
+      results[name] = { ok: false, error: e instanceof Error ? e.message.substring(0, 150) : String(e) }
+    } finally {
+      await prisma.$disconnect()
+    }
   }
 
-  try {
-    const count = await prisma.article.count()
-    info.db_connected = true
-    info.article_count = count
-  } catch (error) {
-    info.db_connected = false
-    info.db_error = error instanceof Error ? error.message : String(error)
-  }
-
-  return NextResponse.json(info)
+  return NextResponse.json(results)
 }
