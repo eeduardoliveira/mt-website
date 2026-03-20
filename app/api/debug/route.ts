@@ -4,27 +4,14 @@ import { PrismaClient } from "@prisma/client"
 export async function GET() {
   const results: Record<string, unknown> = {}
 
-  // Try multiple connection string formats
   const urls = [
     {
-      name: "pooler_transaction_6543",
-      url: `postgresql://postgres.fytptwolmscqzatlckii:lL6Oew8mwM1w@aws-0-eu-west-1.pooler.supabase.com:6543/postgres`,
+      name: "prisma_user_pooler_6543",
+      url: `postgresql://prisma_user.fytptwolmscqzatlckii:MTwebsite2024db@aws-0-eu-west-1.pooler.supabase.com:6543/postgres`,
     },
     {
-      name: "pooler_session_5432",
-      url: `postgresql://postgres.fytptwolmscqzatlckii:lL6Oew8mwM1w@aws-0-eu-west-1.pooler.supabase.com:5432/postgres`,
-    },
-    {
-      name: "direct_5432",
-      url: `postgresql://postgres:lL6Oew8mwM1w@db.fytptwolmscqzatlckii.supabase.co:5432/postgres`,
-    },
-    {
-      name: "pooler_transaction_ssl",
-      url: `postgresql://postgres.fytptwolmscqzatlckii:lL6Oew8mwM1w@aws-0-eu-west-1.pooler.supabase.com:6543/postgres?sslmode=require`,
-    },
-    {
-      name: "direct_ssl",
-      url: `postgresql://postgres:lL6Oew8mwM1w@db.fytptwolmscqzatlckii.supabase.co:5432/postgres?sslmode=require`,
+      name: "prisma_user_pooler_5432",
+      url: `postgresql://prisma_user.fytptwolmscqzatlckii:MTwebsite2024db@aws-0-eu-west-1.pooler.supabase.com:5432/postgres`,
     },
   ]
 
@@ -34,7 +21,7 @@ export async function GET() {
       const count = await prisma.$queryRaw`SELECT 1 as ok`
       results[name] = { ok: true, result: count }
     } catch (e) {
-      results[name] = { ok: false, error: e instanceof Error ? e.message.substring(0, 150) : String(e) }
+      results[name] = { ok: false, error: e instanceof Error ? e.message.substring(0, 200) : String(e) }
     } finally {
       await prisma.$disconnect()
     }
