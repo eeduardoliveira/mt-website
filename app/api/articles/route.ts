@@ -22,7 +22,8 @@ export async function GET(request: Request) {
     })
 
     return NextResponse.json(articles)
-  } catch {
+  } catch (error) {
+    console.error("Failed to fetch articles:", error)
     return NextResponse.json({ error: "Failed to fetch articles" }, { status: 500 })
   }
 }
