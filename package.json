@@ -4,13 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@prisma/client": "^5.22.0",
     "@supabase/supabase-js": "^2.99.3",
     "@tailwindcss/typography": "^0.5.19",
     "@tiptap/extension-image": "^3.20.4",
@@ -23,7 +22,6 @@
     "lucide-react": "^0.577.0",
     "next": "14.2.35",
     "nodemailer": "^8.0.3",
-    "prisma": "^5.22.0",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.71.2",

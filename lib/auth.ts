@@ -1,4 +1,4 @@
-import { prisma } from "./prisma"
+import { getSupabase } from "./supabase"
 import { cookies } from "next/headers"
 import { randomBytes } from "crypto"
 
@@ -12,12 +12,15 @@ export async function verifyPassword(password: string): Promise<boolean> {
 }
 
 export async function createSession(): Promise<string> {
+  const supabase = getSupabase()
   const token = randomBytes(32).toString("hex")
   const expiresAt = new Date(Date.now() + SESSION_DURATION)
 
-  await prisma.adminSession.create({
-    data: { token, expiresAt },
-  })
+  const { error } = await supabase
+    .from("AdminSession")
+    .insert({ token, expiresAt: expiresAt.toISOString() })
+
+  if (error) throw error
 
   const cookieStore = await cookies()
   cookieStore.set(SESSION_COOKIE, token, {
@@ -32,17 +35,20 @@ export async function createSession(): Promise<string> {
 }
 
 export async function validateSession(): Promise<boolean> {
+  const supabase = getSupabase()
   const cookieStore = await cookies()
   const token = cookieStore.get(SESSION_COOKIE)?.value
   if (!token) return false
 
-  const session = await prisma.adminSession.findUnique({
-    where: { token },
-  })
+  const { data: session } = await supabase
+    .from("AdminSession")
+    .select("*")
+    .eq("token", token)
+    .single()
 
-  if (!session || session.expiresAt < new Date()) {
+  if (!session || new Date(session.expiresAt) < new Date()) {
     if (session) {
-      await prisma.adminSession.delete({ where: { token } })
+      await supabase.from("AdminSession").delete().eq("token", token)
     }
     return false
   }
@@ -51,11 +57,12 @@ export async function validateSession(): Promise<boolean> {
 }
 
 export async function destroySession(): Promise<void> {
+  const supabase = getSupabase()
   const cookieStore = await cookies()
   const token = cookieStore.get(SESSION_COOKIE)?.value
 
   if (token) {
-    await prisma.adminSession.deleteMany({ where: { token } })
+    await supabase.from("AdminSession").delete().eq("token", token)
   }
 
   cookieStore.delete(SESSION_COOKIE)

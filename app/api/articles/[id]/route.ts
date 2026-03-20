@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { getSupabase } from "@/lib/supabase"
 import { validateSession } from "@/lib/auth"
 import slugify from "slugify"
 
@@ -8,11 +8,14 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const article = await prisma.article.findUnique({
-      where: { id: params.id },
-    })
+    const supabase = getSupabase()
+    const { data: article, error } = await supabase
+      .from("Article")
+      .select("*")
+      .eq("id", params.id)
+      .single()
 
-    if (!article) {
+    if (error || !article) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 })
     }
 
@@ -32,12 +35,16 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const supabase = getSupabase()
     const body = await request.json()
     const { titlePt, titleEn, excerptPt, excerptEn, contentPt, contentEn, category, coverImage, author, published } = body
 
-    const existing = await prisma.article.findUnique({
-      where: { id: params.id },
-    })
+    const { data: existing } = await supabase
+      .from("Article")
+      .select("*")
+      .eq("id", params.id)
+      .single()
+
     if (!existing) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 })
     }
@@ -46,7 +53,11 @@ export async function PUT(
     let slug = existing.slug
     if (titlePt && titlePt !== existing.titlePt) {
       slug = slugify(titlePt, { lower: true, strict: true })
-      const duplicate = await prisma.article.findUnique({ where: { slug } })
+      const { data: duplicate } = await supabase
+        .from("Article")
+        .select("id")
+        .eq("slug", slug)
+        .single()
       if (duplicate && duplicate.id !== params.id) {
         slug = `${slug}-${Date.now()}`
       }
@@ -55,28 +66,31 @@ export async function PUT(
     // Handle publishedAt
     let publishedAt = existing.publishedAt
     if (published && !existing.published) {
-      publishedAt = new Date()
+      publishedAt = new Date().toISOString()
     } else if (!published) {
       publishedAt = null
     }
 
-    const article = await prisma.article.update({
-      where: { id: params.id },
-      data: {
-        slug,
-        ...(titlePt !== undefined && { titlePt }),
-        ...(titleEn !== undefined && { titleEn }),
-        ...(excerptPt !== undefined && { excerptPt }),
-        ...(excerptEn !== undefined && { excerptEn }),
-        ...(contentPt !== undefined && { contentPt }),
-        ...(contentEn !== undefined && { contentEn }),
-        ...(category !== undefined && { category }),
-        ...(coverImage !== undefined && { coverImage }),
-        ...(author !== undefined && { author }),
-        ...(published !== undefined && { published }),
-        publishedAt,
-      },
-    })
+    const updateData: Record<string, unknown> = { slug, publishedAt, updatedAt: new Date().toISOString() }
+    if (titlePt !== undefined) updateData.titlePt = titlePt
+    if (titleEn !== undefined) updateData.titleEn = titleEn
+    if (excerptPt !== undefined) updateData.excerptPt = excerptPt
+    if (excerptEn !== undefined) updateData.excerptEn = excerptEn
+    if (contentPt !== undefined) updateData.contentPt = contentPt
+    if (contentEn !== undefined) updateData.contentEn = contentEn
+    if (category !== undefined) updateData.category = category
+    if (coverImage !== undefined) updateData.coverImage = coverImage
+    if (author !== undefined) updateData.author = author
+    if (published !== undefined) updateData.published = published
+
+    const { data: article, error } = await supabase
+      .from("Article")
+      .update(updateData)
+      .eq("id", params.id)
+      .select()
+      .single()
+
+    if (error) throw error
 
     return NextResponse.json(article)
   } catch {
@@ -94,9 +108,13 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    await prisma.article.delete({
-      where: { id: params.id },
-    })
+    const supabase = getSupabase()
+    const { error } = await supabase
+      .from("Article")
+      .delete()
+      .eq("id", params.id)
+
+    if (error) throw error
 
     return NextResponse.json({ success: true })
   } catch {

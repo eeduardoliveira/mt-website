@@ -1,25 +1,26 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { getSupabase } from "@/lib/supabase"
 import { validateSession } from "@/lib/auth"
 import slugify from "slugify"
 
 export async function GET(request: Request) {
   try {
+    const supabase = getSupabase()
     const { searchParams } = new URL(request.url)
     const category = searchParams.get("category")
     const published = searchParams.get("published")
     const limit = searchParams.get("limit")
 
-    const where: Record<string, unknown> = {}
-    if (category) where.category = category
-    if (published === "true") where.published = true
-    if (published === "false") where.published = false
+    let query = supabase.from("Article").select("*").order("createdAt", { ascending: false })
 
-    const articles = await prisma.article.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      ...(limit ? { take: parseInt(limit) } : {}),
-    })
+    if (category) query = query.eq("category", category)
+    if (published === "true") query = query.eq("published", true)
+    if (published === "false") query = query.eq("published", false)
+    if (limit) query = query.limit(parseInt(limit))
+
+    const { data: articles, error } = await query
+
+    if (error) throw error
 
     return NextResponse.json(articles)
   } catch (error) {
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const supabase = getSupabase()
     const body = await request.json()
     const { titlePt, titleEn, excerptPt, excerptEn, contentPt, contentEn, category, coverImage, author, published } = body
 
@@ -45,11 +47,16 @@ export async function POST(request: Request) {
     const slug = slugify(titlePt, { lower: true, strict: true })
 
     // Check for duplicate slug
-    const existing = await prisma.article.findUnique({ where: { slug } })
+    const { data: existing } = await supabase
+      .from("Article")
+      .select("id")
+      .eq("slug", slug)
+      .single()
     const finalSlug = existing ? `${slug}-${Date.now()}` : slug
 
-    const article = await prisma.article.create({
-      data: {
+    const { data: article, error } = await supabase
+      .from("Article")
+      .insert({
         slug: finalSlug,
         titlePt,
         titleEn,
@@ -61,9 +68,12 @@ export async function POST(request: Request) {
         coverImage: coverImage || null,
         author: author || "Margarida Tempera",
         published: published || false,
-        publishedAt: published ? new Date() : null,
-      },
-    })
+        publishedAt: published ? new Date().toISOString() : null,
+      })
+      .select()
+      .single()
+
+    if (error) throw error
 
     return NextResponse.json(article, { status: 201 })
   } catch {
